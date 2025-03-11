@@ -2,9 +2,9 @@
 #
 # This module defines the following variables:
 #
-# GLFW3_LIBRARY         the name of the library;
-# GLFW3_INCLUDE_DIR     where to find glfw include files.
-# GLFW3_FOUND           true if both the GLFW3_LIBRARY and GLFW3_INCLUDE_DIR have been found.
+# GLFW3_LIBRARY     - the name of the library;
+# GLFW3_INCLUDE_DIR - where to find glfw include files.
+# GLFW3_FOUND       - true if both the GLFW3_LIBRARY and GLFW3_INCLUDE_DIR have been found.
 #
 # To help locate the library and include file, you can define a
 # variable called GLFW3_ROOT which points to the root of the glfw library
@@ -41,8 +41,7 @@ if( GLFW3_ROOT )
 endif()
 
 # Search for the header
-find_path( GLFW3_INCLUDE_DIR 
-    "GLFW/glfw3.h"
+find_path( GLFW3_INCLUDE_DIR "GLFW/glfw3.h"
     PATHS ${_glfw3_HEADER_SEARCH_DIRS}
 )
 
