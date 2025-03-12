@@ -36,30 +36,34 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	
 float lastFrame = 0.0f;
 
-int main()
+/**
+ * 메인 진입점 함수
+ */
+int main( int argc, char* argv[] )
 {
-    // glfw: initialize and configure
-    // ------------------------------
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_SAMPLES, 4);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
+    glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+    glfwWindowHint( GLFW_SAMPLES, 4 );
+    glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
 #endif
+
+    //glfwWindowHint( GLFW_SCALE_TO_MONITOR, GL_TRUE );
 
     // glfw window creation
     // --------------------
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    glfwMakeContextCurrent(window);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
+    glfwMakeContextCurrent(window);
+
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetScrollCallback(window, scroll_callback);
@@ -69,7 +73,7 @@ int main()
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) )
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
@@ -607,13 +611,13 @@ unsigned int sphereVAO = 0;
 GLsizei indexCount;
 void renderSphere()
 {
-    if (sphereVAO == 0)
+    if ( sphereVAO == 0 ) // invalid vertex-array-object
     {
-        glGenVertexArrays(1, &sphereVAO);
+        glGenVertexArrays( 1, &sphereVAO );
 
         unsigned int vbo, ebo;
-        glGenBuffers(1, &vbo);
-        glGenBuffers(1, &ebo);
+        glGenBuffers( 1, &vbo );
+        glGenBuffers( 1, &ebo );
 
         std::vector<glm::vec3> positions;
         std::vector<glm::vec2> uv;
@@ -623,24 +627,24 @@ void renderSphere()
         const unsigned int X_SEGMENTS = 64;
         const unsigned int Y_SEGMENTS = 64;
         const float PI = 3.14159265359f;
-        for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+        for ( unsigned int x = 0; x <= X_SEGMENTS; ++x )
         {
-            for (unsigned int y = 0; y <= Y_SEGMENTS; ++y)
+            for ( unsigned int y = 0; y <= Y_SEGMENTS; ++y )
             {
-                float xSegment = (float)x / (float)X_SEGMENTS;
-                float ySegment = (float)y / (float)Y_SEGMENTS;
-                float xPos = std::cos(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
-                float yPos = std::cos(ySegment * PI);
-                float zPos = std::sin(xSegment * 2.0f * PI) * std::sin(ySegment * PI);
+                float xSegment  = (float)x / (float)X_SEGMENTS;
+                float ySegment  = (float)y / (float)Y_SEGMENTS;
+                float xPos      = std::cos( xSegment * 2.0f * PI ) * std::sin( ySegment * PI );
+                float yPos      = std::cos( ySegment * PI );
+                float zPos      = std::sin( xSegment * 2.0f * PI ) * std::sin( ySegment * PI );
 
-                positions.push_back(glm::vec3(xPos, yPos, zPos));
-                uv.push_back(glm::vec2(xSegment, ySegment));
-                normals.push_back(glm::vec3(xPos, yPos, zPos));
+                positions.push_back( glm::vec3(xPos, yPos, zPos) );
+                uv.push_back( glm::vec2(xSegment, ySegment) );
+                normals.push_back( glm::vec3(xPos, yPos, zPos) );
             }
         }
 
         bool oddRow = false;
-        for (unsigned int y = 0; y < Y_SEGMENTS; ++y)
+        for ( unsigned int y = 0; y < Y_SEGMENTS; ++y )
         {
             if (!oddRow) // even rows: y == 0, y == 2; and so on
             {
@@ -680,22 +684,24 @@ void renderSphere()
                 data.push_back(uv[i].y);
             }
         }
-        glBindVertexArray(sphereVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+
+        glBindVertexArray( sphereVAO );
+        glBindBuffer( GL_ARRAY_BUFFER, vbo );
+        glBufferData( GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW );
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ebo );
+        glBufferData( GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW );
         unsigned int stride = (3 + 2 + 3) * sizeof(float);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray( 0 );
+        glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, stride, (void*)(0 * sizeof(float)) );
+        glEnableVertexAttribArray( 1 );
+        glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)) );
         glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
+        glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)) );
     }
 
-    glBindVertexArray(sphereVAO);
-    glDrawElements(GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0);
+    glBindVertexArray( sphereVAO );
+    glDrawElements( GL_TRIANGLE_STRIP, indexCount, GL_UNSIGNED_INT, 0 );
+    glBindVertexArray( 0 );
 }
 
 // renderCube() renders a 1x1 3D cube in NDC.
@@ -704,10 +710,10 @@ unsigned int cubeVAO = 0;
 unsigned int cubeVBO = 0;
 void renderCube()
 {
-    // initialize (if necessary)
-    if (cubeVAO == 0)
+    if ( cubeVAO == 0 ) // invalid vertex-array-object
     {
-        float vertices[] = {
+        float vertices[] = 
+        {
             // back face
             -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
              1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
@@ -751,26 +757,29 @@ void renderCube()
             -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
             -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
         };
-        glGenVertexArrays(1, &cubeVAO);
-        glGenBuffers(1, &cubeVBO);
-        // fill buffer
-        glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        // link vertex attributes
-        glBindVertexArray(cubeVAO);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
+        // position( float3 ) + normal( float3 ) + uv( float2 ) = float8
+
+        glGenVertexArrays( 1, &cubeVAO );
+        glBindVertexArray( cubeVAO );
+
+        glGenBuffers( 1, &cubeVBO );
+        glBindBuffer( GL_ARRAY_BUFFER, cubeVBO );
+        glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_STATIC_DRAW );
+        
+        glEnableVertexAttribArray( 0 );
+        glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)) );
+        glEnableVertexAttribArray( 1 );
+        glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)) );
+        glEnableVertexAttribArray( 2 );
+        glVertexAttribPointer( 2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)) );
+
+        glBindBuffer( GL_ARRAY_BUFFER, 0 );
+        glBindVertexArray( 0 );
     }
-    // render Cube
-    glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
+
+    glBindVertexArray( cubeVAO ); // vertex-array-object
+    glDrawArrays( GL_TRIANGLES, 0, 36 );
+    glBindVertexArray( 0 );
 }
 
 // renderQuad() renders a 1x1 XY quad in NDC
@@ -779,29 +788,34 @@ unsigned int quadVAO = 0;
 unsigned int quadVBO;
 void renderQuad()
 {
-    if (quadVAO == 0)
+    if ( quadVAO == 0 ) // invalid vertex-array-object
     {
-        float quadVertices[] = {
+        float quadVertices[] = 
+        {
             // positions        // texture Coords
             -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
              1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
              1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
-        // setup plane VAO
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        // position( float3 ) + uv( float2 ) = float5
+
+        glGenVertexArrays( 1, &quadVAO );
+        glBindVertexArray( quadVAO );
+
+        glGenBuffers( 1, &quadVBO );
+        glBindBuffer( GL_ARRAY_BUFFER, quadVBO );
+        glBufferData( GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW );
+
+        glEnableVertexAttribArray( 0 );
+        glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(0 * sizeof(float)) );
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)) );
     }
-    glBindVertexArray(quadVAO);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindVertexArray(0);
+
+    glBindVertexArray( quadVAO );
+    glDrawArrays( GL_TRIANGLE_STRIP, 0, 4 );
+    glBindVertexArray( 0 );
 }
 
 // utility function for loading a 2D texture from file
